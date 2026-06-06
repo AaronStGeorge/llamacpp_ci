@@ -3,7 +3,15 @@ set -euo pipefail
 
 ROCM_VERSION="${ROCM_VERSION:-7.2.1}"
 ROCM_APT_CODENAME="${ROCM_APT_CODENAME:-}"
-ROCM_PACKAGES="${ROCM_PACKAGES:-rocm-hip-sdk}"
+ROCM_PACKAGES="${ROCM_PACKAGES:-hipcc hip-dev rocm-cmake rocm-device-libs}"
+APT_INSTALL=(sudo apt-get install -y --no-install-recommends)
+
+if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    df -h /
+    sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /opt/hostedtoolcache/CodeQL || true
+    sudo apt-get clean
+    df -h /
+fi
 
 if [[ -z "${ROCM_APT_CODENAME}" ]]; then
     # shellcheck disable=SC1091
@@ -12,7 +20,7 @@ if [[ -z "${ROCM_APT_CODENAME}" ]]; then
 fi
 
 sudo apt-get update
-sudo apt-get install -y \
+"${APT_INSTALL[@]}" \
     build-essential \
     ca-certificates \
     cmake \
@@ -41,4 +49,4 @@ EOF
 
 sudo apt-get update
 # shellcheck disable=SC2086
-sudo apt-get install -y ${ROCM_PACKAGES}
+"${APT_INSTALL[@]}" ${ROCM_PACKAGES}
