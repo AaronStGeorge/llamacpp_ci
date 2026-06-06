@@ -3,16 +3,6 @@ name: HRX build
 on:
   workflow_dispatch:
     inputs:
-      hrx_repository:
-        description: HRX git repository
-        required: false
-        default: https://github.com/ROCm/hrx.git
-        type: string
-      hrx_ref:
-        description: HRX ref to build. Leave empty for the repository default branch head.
-        required: false
-        default: ''
-        type: string
       hrx_release_type:
         description: TheRock artifact release type
         required: false
@@ -49,14 +39,12 @@ jobs:
     name: ubuntu-latest
     runs-on: ubuntu-latest
     env:
-      HRX_REPOSITORY: ${{ github.event.inputs.hrx_repository || 'https://github.com/ROCm/hrx.git' }}
-      HRX_REF: ${{ github.event.inputs.hrx_ref || '' }}
       HRX_RELEASE_TYPE: ${{ github.event.inputs.hrx_release_type || 'nightly' }}
       HRX_RUN_ID: ${{ github.event.inputs.hrx_run_id || '' }}
       HRX_ARTIFACT_SET: ${{ github.event.inputs.hrx_artifact_set || 'core-with-upstream-hip' }}
 
     steps:
-      - name: Clone llama.cpp
+      - name: Checkout CI scripts
         uses: actions/checkout@v6
 
       - name: Install ROCm build dependencies

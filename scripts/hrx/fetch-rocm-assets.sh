@@ -1,14 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-HRX_SRC_DIR="${HRX_SRC_DIR:-${RUNNER_TEMP:-/tmp}/hrx-src}"
-HRX_ROCM_ROOT="${HRX_ROCM_ROOT:-${RUNNER_TEMP:-/tmp}/hrx-rocm-root}"
-HRX_DOWNLOAD_CACHE_DIR="${HRX_DOWNLOAD_CACHE_DIR:-${RUNNER_TEMP:-/tmp}/hrx-rocm-downloads}"
-HRX_RELEASE_TYPE="${HRX_RELEASE_TYPE:-nightly}"
-HRX_RUN_ID="${HRX_RUN_ID:-}"
-HRX_ARTIFACT_SET="${HRX_ARTIFACT_SET:-core-with-upstream-hip}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-export HRX_ROCM_ROOT HRX_DOWNLOAD_CACHE_DIR HRX_RELEASE_TYPE HRX_RUN_ID HRX_ARTIFACT_SET
+. "${SCRIPT_DIR}/env.sh"
 
 python3 "${HRX_SRC_DIR}/build_tools/ci_core_linux.py" fetch-rocm
 
