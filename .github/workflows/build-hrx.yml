@@ -58,5 +58,14 @@ jobs:
           evict-old-files: 1d
           save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
+      - name: Checkout HRX
+        run: scripts/hrx/checkout-hrx.sh
+
+      - name: Fetch ROCm assets
+        run: scripts/hrx/fetch-rocm-assets.sh
+
       - name: Build HRX
-        run: scripts/hrx/ci-build-hrx.sh
+        run: scripts/hrx/build-hrx.sh
+
+      - name: Validate HRX
+        run: scripts/hrx/validate-hrx.sh
