@@ -42,7 +42,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ubuntu-latest-hrx:
+  ubuntu-latest:
     runs-on: ubuntu-latest
     env:
       HRX_REPOSITORY: ${{ github.event.inputs.hrx_repository || 'https://github.com/ROCm/hrx.git' }}
@@ -65,7 +65,7 @@ jobs:
       - name: ccache
         uses: ggml-org/ccache-action@v1.2.21
         with:
-          key: ubuntu-latest-hrx-${{ env.ROCM_VERSION }}-${{ env.GGML_HRX_AMDGPU_TARGETS }}
+          key: ubuntu-latest-${{ env.ROCM_VERSION }}-${{ env.GGML_HRX_AMDGPU_TARGETS }}
           evict-old-files: 1d
           save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
