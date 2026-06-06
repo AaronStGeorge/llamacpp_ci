@@ -21,7 +21,7 @@ on:
         default: gfx1100
   push:
     branches:
-      - master
+      - main
     paths:
       - '.github/workflows/build-hrx.yml'
       - 'scripts/hrx/**'
@@ -42,7 +42,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  ubuntu-latest:
+  hrx-build:
+    name: ubuntu-latest
     runs-on: ubuntu-latest
     env:
       HRX_REPOSITORY: ${{ github.event.inputs.hrx_repository || 'https://github.com/ROCm/hrx.git' }}
@@ -67,7 +68,7 @@ jobs:
         with:
           key: ubuntu-latest-${{ env.ROCM_VERSION }}-${{ env.GGML_HRX_AMDGPU_TARGETS }}
           evict-old-files: 1d
-          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
       - name: Build HRX and llama.cpp HRX backend
         run: scripts/hrx/ci-build-hrx.sh
