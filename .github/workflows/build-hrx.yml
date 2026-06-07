@@ -75,3 +75,8 @@ jobs:
 
       - name: Build llama.cpp with HRX
         run: scripts/hrx/build-llama-hrx.sh
+
+      - name: Run test-backend-ops on CPU
+        run: |
+          . scripts/hrx/env.sh
+          "${LLAMA_BUILD_DIR}/bin/test-backend-ops" test -o MUL_MAT -b CPU
