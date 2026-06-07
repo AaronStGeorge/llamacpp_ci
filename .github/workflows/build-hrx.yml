@@ -69,3 +69,9 @@ jobs:
 
       - name: Validate HRX
         run: scripts/hrx/validate-hrx.sh
+
+      - name: Checkout llama.cpp
+        run: scripts/hrx/checkout-llama.sh
+
+      - name: Build llama.cpp with HRX
+        run: scripts/hrx/build-llama-hrx.sh

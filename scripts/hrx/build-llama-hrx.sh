@@ -4,7 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 . "${SCRIPT_DIR}/env.sh"
-"${SCRIPT_DIR}/checkout-llama.sh"
 
 GGML_HRX_AMDGPU_TARGETS="${GGML_HRX_AMDGPU_TARGETS:-gfx1100}"
 GGML_HRX_BUILD_HIP_BENCHES="${GGML_HRX_BUILD_HIP_BENCHES:-OFF}"

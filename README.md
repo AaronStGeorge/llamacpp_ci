@@ -1,12 +1,12 @@
 # llamacpp_ci
 
-This repository contains GitHub Actions and local build scripts for validating the HRX runtime build used by the llama.cpp HRX integration work.
+This repository contains GitHub Actions and local build scripts for validating the HRX runtime build and the pinned llama.cpp HRX backend integration.
 
-The CI job builds HRX from a pinned ROCm/hrx revision on the default `ubuntu-latest` GitHub runner. ROCm toolchain and runtime dependencies are fetched from HRX/TheRock ROCm assets instead of installing full ROCm packages from apt.
+The CI job builds HRX from a pinned ROCm/hrx revision on the default `ubuntu-latest` GitHub runner, validates the installed HRX runtime, then builds pinned ROCm/llama.cpp with `GGML_HRX=ON`. ROCm toolchain and runtime dependencies are fetched from HRX/TheRock ROCm assets instead of installing full ROCm packages from apt.
 
 ## What Gets Built
 
-The active workflow builds HRX only. It does not build llama.cpp as part of the default CI path.
+The active workflow builds HRX, validates the HRX install with `hrx-info --device=cpu:0`, then builds llama.cpp with the HRX backend enabled.
 
 The HRX source revision and related repository pins live in:
 
@@ -35,6 +35,9 @@ It performs these steps:
 4. Check out the pinned HRX revision.
 5. Fetch ROCm assets using HRX's asset-fetching support.
 6. Configure, build, and install HRX with `amdclang` and `amdclang++` from those assets.
+7. Validate the HRX install with `hrx-info --device=cpu:0`.
+8. Check out pinned `ROCm/llama.cpp`.
+9. Configure and build llama.cpp with `GGML_HRX=ON`.
 
 Workflow dispatch inputs control the ROCm asset selection:
 
@@ -76,7 +79,10 @@ scripts/hrx/run-build.sh
 - `scripts/hrx/checkout-hrx.sh`: checks out pinned HRX.
 - `scripts/hrx/fetch-rocm-assets.sh`: fetches and exposes ROCm assets.
 - `scripts/hrx/build-hrx.sh`: configures and builds HRX.
-- `scripts/hrx/run-build.sh`: full checkout, ROCm asset fetch, and HRX build flow.
+- `scripts/hrx/validate-hrx.sh`: validates the installed HRX runtime with a CPU smoke test.
+- `scripts/hrx/checkout-llama.sh`: checks out pinned ROCm/llama.cpp.
+- `scripts/hrx/build-llama-hrx.sh`: configures and builds llama.cpp with the HRX backend.
+- `scripts/hrx/run-build.sh`: full HRX checkout, ROCm asset fetch, build, and validation flow.
 - `scripts/hrx/local-build-hrx.sh`: local entrypoint using ignored repo-local output paths.
 - `scripts/hrx/ci-build-hrx.sh`: CI entrypoint.
 
