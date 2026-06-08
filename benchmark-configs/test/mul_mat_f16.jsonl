@@ -1,0 +1,1 @@
+{"name":"mul_mat_f16_basic","op":29,"op_name":"MUL_MAT","type":0,"type_name":"f32","ne":[128,1,1,1],"sources":[{"type":1,"type_name":"f16","ne":[128,128,1,1],"nb":[2,256,32768,32768]},{"type":0,"type_name":"f32","ne":[128,1,1,1],"nb":[4,512,512,512]}]}

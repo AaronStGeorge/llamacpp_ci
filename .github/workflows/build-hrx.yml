@@ -24,11 +24,19 @@ on:
     paths:
       - '.github/workflows/build-hrx.yml'
       - 'scripts/hrx/**'
+      - 'tools/**'
+      - 'benchmark-configs/**'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - '.github/workflows/build-hrx.yml'
       - 'scripts/hrx/**'
+      - 'tools/**'
+      - 'benchmark-configs/**'
+
+permissions:
+  contents: read
+  actions: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref && github.ref || github.run_id }}
@@ -47,6 +55,8 @@ jobs:
     steps:
       - name: Checkout CI scripts
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
 
       - name: Install ROCm build dependencies
         run: scripts/hrx/install-rocm-deps.sh
@@ -76,7 +86,46 @@ jobs:
       - name: Build llama.cpp with HRX
         run: scripts/hrx/build-llama-hrx.sh
 
-      - name: Run test-backend-ops on CPU
+      - name: Run sample MUL_MAT correctness config on CPU
         run: |
           . scripts/hrx/env.sh
-          "${LLAMA_BUILD_DIR}/bin/test-backend-ops" test -o MUL_MAT -b CPU
+          tools/run-op-test.py \
+            --test-backend-ops "${LLAMA_BUILD_DIR}/bin/test-backend-ops" \
+            --test-file benchmark-configs/test/mul_mat_f16.txt \
+            --op MUL_MAT \
+            --backend CPU \
+            --output benchmark-results/sample-mul-mat-f16-cpu-test.jsonl
+
+      - name: Run sample MUL_MAT benchmark config on CPU
+        run: |
+          . scripts/hrx/env.sh
+          tools/run-op-perf.py \
+            --test-backend-ops "${LLAMA_BUILD_DIR}/bin/test-backend-ops" \
+            --test-file benchmark-configs/test/mul_mat_f16.txt \
+            --op MUL_MAT \
+            --backend CPU \
+            --output benchmark-results/sample-mul-mat-f16-cpu-perf.jsonl
+
+      - name: Upload CPU benchmark results
+        uses: actions/upload-artifact@v5
+        with:
+          name: cpu-benchmark-results
+          path: benchmark-results/
+
+      - name: Download previous CPU benchmark results
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PARENT_SHA: ${{ github.event.before || github.event.pull_request.base.sha || '' }}
+        run: tools/download-parent-artifact.sh cpu-benchmark-results benchmark-results/previous
+
+      - name: Compare CPU benchmark results
+        run: |
+          set -euo pipefail
+          previous="benchmark-results/previous/sample-mul-mat-f16-cpu-perf.jsonl"
+          current="benchmark-results/sample-mul-mat-f16-cpu-perf.jsonl"
+          if [[ ! -f "${previous}" ]]; then
+            echo "No previous CPU benchmark JSONL found; skipping comparison."
+            exit 0
+          fi
+          . scripts/hrx/env.sh
+          tools/compare-op-perf.py "${previous}" "${current}" --max-regression-pct 5 --require-all-cases
