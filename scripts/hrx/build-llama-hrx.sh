@@ -4,14 +4,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 . "${SCRIPT_DIR}/env.sh"
+. "${SCRIPT_DIR}/runtime-env.sh"
 
 GGML_HRX_BUILD_HIP_BENCHES="${GGML_HRX_BUILD_HIP_BENCHES:-OFF}"
 LLAMA_BUILD_TARGET="${LLAMA_BUILD_TARGET:-}"
-
-if [[ -z "${ROCM_PATH:-}" ]]; then
-    ROCM_PATH="${HRX_ROCM_ROOT}"
-fi
-export ROCM_PATH
 
 if [[ -z "${GGML_HRX_AMDGPU_TARGETS:-}" ]]; then
     GGML_HRX_AMDGPU_TARGETS=""

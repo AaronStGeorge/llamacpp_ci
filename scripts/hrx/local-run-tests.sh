@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel)"
 
 . "${SCRIPT_DIR}/local-env.sh"
+. "${SCRIPT_DIR}/runtime-env.sh"
 
 TEST_BACKEND_OPS="${LLAMA_BUILD_DIR}/bin/test-backend-ops"
 if [[ ! -x "${TEST_BACKEND_OPS}" ]]; then
@@ -19,4 +20,7 @@ if [[ $# -gt 0 ]]; then
     shift
 fi
 
-"${TEST_BACKEND_OPS}" test -o "${OPERATION}" -b CPU "$@"
+# Backend to test (test-backend-ops -b). Override for CPU-only hosts: TEST_BACKEND=CPU.
+TEST_BACKEND="${TEST_BACKEND:-HRX0}"
+
+"${TEST_BACKEND_OPS}" test -o "${OPERATION}" -b "${TEST_BACKEND}" "$@"
