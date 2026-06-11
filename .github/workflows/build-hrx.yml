@@ -51,6 +51,7 @@ jobs:
       HRX_RUN_ID: ${{ github.event.inputs.hrx_run_id || '' }}
       HRX_ARTIFACT_SET: ${{ github.event.inputs.hrx_artifact_set || 'core-with-upstream-hip' }}
       CCACHE_COMPILERCHECK: content
+      TEST_BACKEND: CPU
 
     steps:
       - name: Checkout CI scripts
@@ -89,6 +90,7 @@ jobs:
       - name: Run sample MUL_MAT correctness config on CPU
         run: |
           . scripts/hrx/env.sh
+          . scripts/hrx/runtime-env.sh
           tools/run-op-test.py \
             --test-backend-ops "${LLAMA_BUILD_DIR}/bin/test-backend-ops" \
             --test-file benchmark-configs/test/mul_mat_f16.txt \
@@ -99,6 +101,7 @@ jobs:
       - name: Run sample MUL_MAT benchmark config on CPU
         run: |
           . scripts/hrx/env.sh
+          . scripts/hrx/runtime-env.sh
           tools/run-op-perf.py \
             --test-backend-ops "${LLAMA_BUILD_DIR}/bin/test-backend-ops" \
             --test-file benchmark-configs/test/mul_mat_f16.txt \
@@ -128,4 +131,5 @@ jobs:
             exit 0
           fi
           . scripts/hrx/env.sh
+          . scripts/hrx/runtime-env.sh
           tools/compare-op-perf.py "${previous}" "${current}" --max-regression-pct 5 --require-all-cases

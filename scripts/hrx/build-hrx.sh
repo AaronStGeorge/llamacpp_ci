@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 . "${SCRIPT_DIR}/env.sh"
+. "${SCRIPT_DIR}/runtime-env.sh"
 
 CMAKE_COMPILER_LAUNCHER="${CMAKE_COMPILER_LAUNCHER:-}"
 if [[ -z "${CMAKE_COMPILER_LAUNCHER}" ]] && command -v ccache >/dev/null 2>&1; then
