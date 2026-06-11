@@ -154,7 +154,7 @@ def main() -> None:
         description="Run test-backend-ops perf for exported graph-op cases."
     )
     parser.add_argument("--op", default="MUL_MAT", help="Operation passed to test-backend-ops -o")
-    parser.add_argument("--backend", default="CPU", help="Backend passed to test-backend-ops -b")
+    parser.add_argument("--backend", default="HRX0", help="Backend passed to test-backend-ops -b")
     parser.add_argument("--test-backend-ops", type=Path, required=True)
     parser.add_argument("--test-file", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
