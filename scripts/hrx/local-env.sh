@@ -2,6 +2,11 @@
 
 # Shared environment defaults for local build entrypoints.
 # Expects REPO_ROOT to be pre-set by the caller.
+if [[ -z "${REPO_ROOT:-}" ]]; then
+		echo "Error: REPO_ROOT environment variable is not set. Please set it to the root of the repository." >&2
+		# This file is sourced; 'return' leaves the script without killing the shell.
+		return 1
+fi
 
 : "${HRX_WORK_DIR:=${REPO_ROOT}}"
 : "${HRX_SRC_DIR:=${HRX_WORK_DIR}/assets/hrx-src}"
