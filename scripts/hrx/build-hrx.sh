@@ -16,6 +16,7 @@ cmake_args=(
     -DCMAKE_INSTALL_PREFIX="${HRX_INSTALL_PREFIX}"
     -DCMAKE_C_COMPILER="${HRX_ROCM_ROOT}/lib/llvm/bin/amdclang"
     -DCMAKE_CXX_COMPILER="${HRX_ROCM_ROOT}/lib/llvm/bin/amdclang++"
+    -DIREE_BUILD_TESTS=OFF
 )
 
 if [[ -n "${CMAKE_COMPILER_LAUNCHER}" ]]; then
